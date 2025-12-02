@@ -12,6 +12,14 @@
     "fabric",
     "hooks"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/naylence/naylence-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/naylence/naylence-react/issues"
+  },
+  "homepage": "https://github.com/naylence/naylence-react#readme",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
