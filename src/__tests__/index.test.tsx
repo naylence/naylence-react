@@ -66,7 +66,6 @@ beforeEach(() => {
 });
 
 describe('FabricProvider', () => {
-
   it('should provide fabric context to children', async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FabricProvider>{children}</FabricProvider>
@@ -90,11 +89,11 @@ describe('FabricProvider', () => {
 
   it('should call fabric.enter() on mount', async () => {
     const mockEnter = vi.fn().mockResolvedValue(undefined);
-    const mockFabric = {
+    const mockFabric: Partial<FameFabric> = {
       enter: mockEnter,
       exit: vi.fn().mockResolvedValue(undefined),
     };
-    vi.mocked(FameFabric.create).mockResolvedValue(mockFabric as any);
+    vi.mocked(FameFabric.create).mockResolvedValue(mockFabric as FameFabric);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FabricProvider>{children}</FabricProvider>
@@ -109,11 +108,11 @@ describe('FabricProvider', () => {
 
   it('should call fabric.exit() on unmount', async () => {
     const mockExit = vi.fn().mockResolvedValue(undefined);
-    const mockFabric = {
+    const mockFabric: Partial<FameFabric> = {
       enter: vi.fn().mockResolvedValue(undefined),
       exit: mockExit,
     };
-    vi.mocked(FameFabric.create).mockResolvedValue(mockFabric as any);
+    vi.mocked(FameFabric.create).mockResolvedValue(mockFabric as FameFabric);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FabricProvider>{children}</FabricProvider>
@@ -152,11 +151,11 @@ describe('FabricProvider', () => {
 
   it('should handle fabric enter errors', async () => {
     const error = new Error('Enter failed');
-    const mockFabric = {
+    const mockFabric: Partial<FameFabric> = {
       enter: vi.fn().mockRejectedValue(error),
       exit: vi.fn().mockResolvedValue(undefined),
     };
-    vi.mocked(FameFabric.create).mockResolvedValue(mockFabric as any);
+    vi.mocked(FameFabric.create).mockResolvedValue(mockFabric as FameFabric);
 
     const wrapper = ({ children }: { children: React.ReactNode }) => (
       <FabricProvider>{children}</FabricProvider>
@@ -236,7 +235,6 @@ describe('useFabric', () => {
 });
 
 describe('useFabricEffect', () => {
-
   it('should run effect when fabric is ready', async () => {
     const effectFn = vi.fn();
 
@@ -331,7 +329,6 @@ describe('useFabricEffect', () => {
 });
 
 describe('useRemoteAgent', () => {
-
   it('should return null when fabric is not ready', () => {
     const error = new Error('Not ready');
     vi.mocked(FameFabric.create).mockRejectedValue(error);
