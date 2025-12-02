@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { renderHook, waitFor, act } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { FameFabric } from '@naylence/core';
 import { Agent } from '@naylence/agent-sdk';
@@ -11,9 +11,8 @@ import {
   type FabricStatus,
 } from '../index';
 
-// Mock FameFabric
-vi.mock('@naylence/core', () => {
-  const mockFabric = {
+function buildMockFabric() {
+  return {
     enter: vi.fn().mockResolvedValue(undefined),
     exit: vi.fn().mockResolvedValue(undefined),
     send: vi.fn(),
@@ -25,17 +24,10 @@ vi.mock('@naylence/core', () => {
     serve: vi.fn(),
     resolveServiceByCapability: vi.fn(),
   };
+}
 
+function buildMockAgentProxy() {
   return {
-    FameFabric: {
-      create: vi.fn().mockResolvedValue(mockFabric),
-    },
-  };
-});
-
-// Mock Agent
-vi.mock('@naylence/agent-sdk', () => {
-  const mockAgentProxy = {
     runTask: vi.fn().mockResolvedValue({ result: 'test' }),
     startTask: vi.fn(),
     getTaskStatus: vi.fn(),
@@ -45,18 +37,35 @@ vi.mock('@naylence/agent-sdk', () => {
     registerPushEndpoint: vi.fn(),
     getPushNotificationConfig: vi.fn(),
   };
+}
 
-  return {
-    Agent: {
-      remoteByAddress: vi.fn().mockReturnValue(mockAgentProxy),
-    },
-  };
+// Mock FameFabric
+vi.mock('@naylence/core', () => ({
+  FameFabric: {
+    create: vi.fn().mockResolvedValue(buildMockFabric()),
+  },
+}));
+
+// Mock Agent
+vi.mock('@naylence/agent-sdk', () => ({
+  Agent: {
+    remoteByAddress: vi.fn().mockImplementation(() => buildMockAgentProxy()),
+  },
+}));
+
+const resetDefaultMocks = () => {
+  vi.mocked(FameFabric.create).mockReset();
+  vi.mocked(FameFabric.create).mockResolvedValue(buildMockFabric() as unknown as FameFabric);
+
+  vi.mocked(Agent.remoteByAddress).mockReset();
+  vi.mocked(Agent.remoteByAddress).mockImplementation(() => buildMockAgentProxy());
+};
+
+beforeEach(() => {
+  resetDefaultMocks();
 });
 
 describe('FabricProvider', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
 
   it('should provide fabric context to children', async () => {
     const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -180,16 +189,19 @@ describe('FabricProvider', () => {
     const opts1 = { rootConfig: { version: 1 } };
     const opts2 = { rootConfig: { version: 2 } };
 
-    const { rerender } = renderHook(({ opts }) => useFabric(), {
-      initialProps: { opts: opts1 },
-      wrapper: ({ children, opts }: any) => <FabricProvider opts={opts}>{children}</FabricProvider>,
-    });
+    let currentOpts = opts1;
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <FabricProvider opts={currentOpts}>{children}</FabricProvider>
+    );
+
+    const { rerender } = renderHook(() => useFabric(), { wrapper });
 
     await waitFor(() => {
       expect(FameFabric.create).toHaveBeenCalledWith(opts1);
     });
 
-    rerender({ opts: opts2 });
+    currentOpts = opts2;
+    rerender();
 
     await waitFor(() => {
       expect(FameFabric.create).toHaveBeenCalledWith(opts2);
@@ -224,9 +236,6 @@ describe('useFabric', () => {
 });
 
 describe('useFabricEffect', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
 
   it('should run effect when fabric is ready', async () => {
     const effectFn = vi.fn();
@@ -322,9 +331,6 @@ describe('useFabricEffect', () => {
 });
 
 describe('useRemoteAgent', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
 
   it('should return null when fabric is not ready', () => {
     const error = new Error('Not ready');
