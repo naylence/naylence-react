@@ -1,0 +1,198 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.nodes-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.arrows-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 180px;
+}
+
+.communication-arrows {
+  display: block;
+  color: #1b7bc9;
+}
+
+@media (max-width: 768px) {
+  .arrows-container {
+    display: none;
+  }
+}
+
+.card {
+  padding: 2em;
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+/* Sentinel Node Styles */
+.sentinel-icon-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.sentinel-icon {
+  width: 120px;
+  height: 120px;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.sentinel-icon.pulse-active {
+  transform: scale(1.1);
+}
+
+.pulse-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid #4CAF50;
+  animation: pulse 0.6s ease-out;
+  pointer-events: none;
+  margin-top: -2px;
+  margin-left: -3px;
+}
+
+.messages-container {
+  margin-top: 25px;
+  text-align: left;
+}
+
+.messages-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.messages-list {
+  margin-top: 23px;
+  min-height: 190px;
+  max-height: 190px;
+  overflow-y: auto;
+}
+
+.message-item {
+  padding: 8px;
+  margin-bottom: 5px;
+  background: #e8f5e9;
+  border-radius: 4px;
+  border-left: 3px solid #4CAF50;
+  font-size: 14px;
+}
+
+.message-item.new {
+  animation: slideIn 0.3s ease-out;
+}
+
+.message-text {
+  color: #1b5e20;
+  font-weight: 500;
+}
+
+.message-timestamp {
+  color: #666;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* Client Node Styles */
+.client-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 20px;
+}
+
+.client-input-container {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-row label {
+  font-weight: 500;
+  min-width: 20px;
+}
+
+.client-input {
+  padding: 8px;
+  width: 80px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.client-response {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  color: #000;
+  min-height: 40px;
+  font-family: monospace;
+  text-align: left;
+  word-break: break-all;
+}
+
+.status-active {
+  color: green;
+}
+
+.status-error {
+  color: red;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
