@@ -1,13 +1,13 @@
+import '@naylence/runtime';
 import { useState, useEffect } from 'react';
-import { enableLogging } from '@naylence/runtime';
-import { FabricProvider } from '../../../src/index';
+import { FabricProvider } from '@naylence/react';
 import { SentinelNode } from './SentinelNode';
 import { ClientNode } from './ClientNode';
 import { sentinelConfig, clientConfig } from './config-in-page-connector';
 import './App.css';
 
 // Enable logging as early as possible (after window.__ENV__ is set in index.html)
-enableLogging('debug');
+// enableLogging('debug');
 
 function App() {
   const [sentinelReady, setSentinelReady] = useState(false);

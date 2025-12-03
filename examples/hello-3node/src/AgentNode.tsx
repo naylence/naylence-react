@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useFabric, useFabricEffect } from '../../../src/index';
+import { useFabric, useFabricEffect } from '@naylence/react';
 import { HelloAgent } from './HelloAgent';
 
 interface AgentNodeProps {

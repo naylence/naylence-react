@@ -1,4 +1,4 @@
-import { useFabric, useFabricEffect } from '../../../src/index';
+import { useFabric, useFabricEffect } from '@naylence/react';
 
 interface SentinelNodeProps {
   onReady?: () => void;
@@ -9,7 +9,7 @@ export function SentinelNode({ onReady }: SentinelNodeProps) {
 
   useFabricEffect(() => {
     // Sentinel is ready as soon as fabric is initialized
-    console.log('Sentinel is ready');
+    // console.log('Sentinel is ready');
     onReady?.();
   }, []);
 

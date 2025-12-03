@@ -54,9 +54,9 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
   const cleanupPromiseRef = useRef<Promise<void> | null>(null);
 
   // Track mount instance for logging
-  const mountIdRef = useRef<string>(
-    `mount-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-  );
+  // const mountIdRef = useRef<string>(
+  //   `mount-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
+  // );
 
   useEffect(() => {
     // Track provider mounting
@@ -69,35 +69,35 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
       providerMountTimestamps.shift();
     }
 
-    const recentMounts = providerMountTimestamps.filter((ts) => now - ts < 200);
-    const isPotentialDoubleMount = recentMounts.length > 1;
+    // const recentMounts = providerMountTimestamps.filter((ts) => now - ts < 200);
+    // const isPotentialDoubleMount = recentMounts.length > 1;
 
     // Check if this is a page reload or cache restore
-    const navigationType =
-      typeof performance !== 'undefined' && performance.navigation
-        ? performance.navigation.type
-        : undefined;
-    const navigationTypeStr =
-      navigationType === 0
-        ? 'navigate'
-        : navigationType === 1
-          ? 'reload'
-          : navigationType === 2
-            ? 'back_forward'
-            : navigationType === 255
-              ? 'reserved'
-              : 'unknown';
+    // const navigationType =
+    //   typeof performance !== 'undefined' && performance.navigation
+    //     ? performance.navigation.type
+    //     : undefined;
+    // const navigationTypeStr =
+    //   navigationType === 0
+    //     ? 'navigate'
+    //     : navigationType === 1
+    //       ? 'reload'
+    //       : navigationType === 2
+    //         ? 'back_forward'
+    //         : navigationType === 255
+    //           ? 'reserved'
+    //           : 'unknown';
 
-    console.log('[FabricProvider] Effect running', {
-      mount_id: mountIdRef.current,
-      mount_count: providerMountCount,
-      potential_double_mount: isPotentialDoubleMount,
-      recent_mounts_within_200ms: recentMounts.length,
-      has_pending_cleanup: cleanupPromiseRef.current !== null,
-      current_fabric_exists: fabricRef.current !== null,
-      navigation_type: navigationTypeStr,
-      page_visible: typeof document !== 'undefined' ? !document.hidden : undefined,
-    });
+    // console.log('[FabricProvider] Effect running', {
+    //   mount_id: mountIdRef.current,
+    //   mount_count: providerMountCount,
+    //   potential_double_mount: isPotentialDoubleMount,
+    //   recent_mounts_within_200ms: recentMounts.length,
+    //   has_pending_cleanup: cleanupPromiseRef.current !== null,
+    //   current_fabric_exists: fabricRef.current !== null,
+    //   navigation_type: navigationTypeStr,
+    //   page_visible: typeof document !== 'undefined' ? !document.hidden : undefined,
+    // });
 
     let cancelled = false;
     let fabricInstance: FameFabric | null = null;
@@ -105,44 +105,44 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
     const initFabric = async () => {
       // Wait for any pending cleanup from previous mount
       if (cleanupPromiseRef.current) {
-        console.log('[FabricProvider] Waiting for pending cleanup', {
-          mount_id: mountIdRef.current,
-        });
+        // console.log('[FabricProvider] Waiting for pending cleanup', {
+        //   mount_id: mountIdRef.current,
+        // });
         try {
           await cleanupPromiseRef.current;
-          console.log('[FabricProvider] Pending cleanup completed', {
-            mount_id: mountIdRef.current,
-          });
+          // console.log('[FabricProvider] Pending cleanup completed', {
+          //   mount_id: mountIdRef.current,
+          // });
         } catch (error) {
           // Cleanup errors are already logged, just continue
-          console.error('[FabricProvider] Cleanup error', {
-            mount_id: mountIdRef.current,
-            error,
-          });
+        // console.error('[FabricProvider] Cleanup error', {
+        //   mount_id: mountIdRef.current,
+        //   error,
+        // });
         }
         cleanupPromiseRef.current = null;
       }
 
       if (cancelled) {
-        console.log('[FabricProvider] Cancelled before fabric creation', {
-          mount_id: mountIdRef.current,
-        });
+        // console.log('[FabricProvider] Cancelled before fabric creation', {
+        //   mount_id: mountIdRef.current,
+        // });
         return;
       }
       try {
         // Set status to connecting
         if (!cancelled) {
-          console.log('[FabricProvider] Setting status to connecting', {
-            mount_id: mountIdRef.current,
-          });
+          // console.log('[FabricProvider] Setting status to connecting', {
+          //   mount_id: mountIdRef.current,
+          // });
           setContextValue({ fabric: null, status: 'connecting', error: null });
         }
 
         // Create the fabric
-        console.log('[FabricProvider] Creating fabric', {
-          mount_id: mountIdRef.current,
-          has_opts: opts !== undefined,
-        });
+        // console.log('[FabricProvider] Creating fabric', {
+        //   mount_id: mountIdRef.current,
+        //   has_opts: opts !== undefined,
+        // });
         const fabric =
           opts === undefined
             ? await (FameFabric.create as () => Promise<FameFabric>)()
@@ -150,47 +150,47 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
 
         if (cancelled) {
           // Cancelled during creation - exit immediately without entering
-          console.log('[FabricProvider] Cancelled after fabric creation, exiting immediately', {
-            mount_id: mountIdRef.current,
-          });
+          // console.log('[FabricProvider] Cancelled after fabric creation, exiting immediately', {
+          //   mount_id: mountIdRef.current,
+          // });
           await fabric.exit?.();
           return;
         }
 
-        console.log('[FabricProvider] Fabric created successfully', {
-          mount_id: mountIdRef.current,
-        });
+        // console.log('[FabricProvider] Fabric created successfully', {
+        //   mount_id: mountIdRef.current,
+        // });
 
         fabricInstance = fabric;
         fabricRef.current = fabric;
 
         // Enter the fabric
-        console.log('[FabricProvider] Entering fabric', {
-          mount_id: mountIdRef.current,
-        });
+        // console.log('[FabricProvider] Entering fabric', {
+        //   mount_id: mountIdRef.current,
+        // });
         await fabric.enter();
 
         if (cancelled) {
           // Cancelled during enter - exit now
-          console.log('[FabricProvider] Cancelled during enter, exiting', {
-            mount_id: mountIdRef.current,
-          });
+          // console.log('[FabricProvider] Cancelled during enter, exiting', {
+          //   mount_id: mountIdRef.current,
+          // });
           await fabric.exit?.();
           fabricRef.current = null;
           return;
         }
 
-        console.log('[FabricProvider] Fabric ready', {
-          mount_id: mountIdRef.current,
-        });
+        // console.log('[FabricProvider] Fabric ready', {
+        //   mount_id: mountIdRef.current,
+        // });
         // Update state to ready
         setContextValue({ fabric, status: 'ready', error: null });
       } catch (err) {
-        console.error('[FabricProvider] Error during fabric initialization', {
-          mount_id: mountIdRef.current,
-          error: err,
-          cancelled,
-        });
+        // console.error('[FabricProvider] Error during fabric initialization', {
+        //   mount_id: mountIdRef.current,
+        //   error: err,
+        //   cancelled,
+        // });
         if (!cancelled) {
           setContextValue({ fabric: null, status: 'error', error: err });
         }
@@ -210,10 +210,10 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
 
     // Cleanup function
     return () => {
-      console.log('[FabricProvider] Cleanup starting', {
-        mount_id: mountIdRef.current,
-        has_fabric: fabricRef.current !== null,
-      });
+      // console.log('[FabricProvider] Cleanup starting', {
+      //   mount_id: mountIdRef.current,
+      //   has_fabric: fabricRef.current !== null,
+      // });
       cancelled = true;
 
       // Clean up the fabric instance if it exists
@@ -221,9 +221,9 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
       if (fabric) {
         fabricRef.current = null;
 
-        console.log('[FabricProvider] Exiting fabric', {
-          mount_id: mountIdRef.current,
-        });
+        // console.log('[FabricProvider] Exiting fabric', {
+        //   mount_id: mountIdRef.current,
+        // });
 
         // Store the cleanup promise so the next mount can wait for it
         const cleanup = fabric.exit?.().catch((err: unknown) => {
@@ -235,9 +235,9 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
         }
       }
 
-      console.log('[FabricProvider] Cleanup complete', {
-        mount_id: mountIdRef.current,
-      });
+      // console.log('[FabricProvider] Cleanup complete', {
+      //   mount_id: mountIdRef.current,
+      // });
     };
   }, [JSON.stringify(opts ?? {})]);
 
