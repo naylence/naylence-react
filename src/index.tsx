@@ -47,6 +47,7 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
     status: 'idle',
     error: null,
   });
+  const optsKey = useMemo(() => JSON.stringify(opts ?? {}), [opts]);
 
   // Use a ref to track the current fabric instance across renders
   const fabricRef = useRef<FameFabric | null>(null);
@@ -59,46 +60,6 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
   // );
 
   useEffect(() => {
-    // Track provider mounting
-    const now = Date.now();
-    providerMountCount++;
-    providerMountTimestamps.push(now);
-
-    // Keep only last 10 timestamps
-    if (providerMountTimestamps.length > 10) {
-      providerMountTimestamps.shift();
-    }
-
-    // const recentMounts = providerMountTimestamps.filter((ts) => now - ts < 200);
-    // const isPotentialDoubleMount = recentMounts.length > 1;
-
-    // Check if this is a page reload or cache restore
-    // const navigationType =
-    //   typeof performance !== 'undefined' && performance.navigation
-    //     ? performance.navigation.type
-    //     : undefined;
-    // const navigationTypeStr =
-    //   navigationType === 0
-    //     ? 'navigate'
-    //     : navigationType === 1
-    //       ? 'reload'
-    //       : navigationType === 2
-    //         ? 'back_forward'
-    //         : navigationType === 255
-    //           ? 'reserved'
-    //           : 'unknown';
-
-    // console.log('[FabricProvider] Effect running', {
-    //   mount_id: mountIdRef.current,
-    //   mount_count: providerMountCount,
-    //   potential_double_mount: isPotentialDoubleMount,
-    //   recent_mounts_within_200ms: recentMounts.length,
-    //   has_pending_cleanup: cleanupPromiseRef.current !== null,
-    //   current_fabric_exists: fabricRef.current !== null,
-    //   navigation_type: navigationTypeStr,
-    //   page_visible: typeof document !== 'undefined' ? !document.hidden : undefined,
-    // });
-
     let cancelled = false;
     let fabricInstance: FameFabric | null = null;
 
@@ -115,10 +76,10 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
           // });
         } catch (error) {
           // Cleanup errors are already logged, just continue
-        // console.error('[FabricProvider] Cleanup error', {
-        //   mount_id: mountIdRef.current,
-        //   error,
-        // });
+          // console.error('[FabricProvider] Cleanup error', {
+          //   mount_id: mountIdRef.current,
+          //   error,
+          // });
         }
         cleanupPromiseRef.current = null;
       }
@@ -239,7 +200,7 @@ export function FabricProvider({ opts, children }: FabricProviderProps): JSX.Ele
       //   mount_id: mountIdRef.current,
       // });
     };
-  }, [JSON.stringify(opts ?? {})]);
+  }, [optsKey]);
 
   return <FabricContext.Provider value={contextValue}>{children}</FabricContext.Provider>;
 }
@@ -317,7 +278,3 @@ export function useRemoteAgent<T extends Agent = Agent>(
 
 // Re-export types
 export type { FabricOpts, FabricStatus, FabricContextValue, FabricProviderProps };
-
-// Debug tracking for StrictMode double-mount detection
-let providerMountCount = 0;
-const providerMountTimestamps: number[] = [];
