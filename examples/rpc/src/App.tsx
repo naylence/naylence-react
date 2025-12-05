@@ -21,9 +21,11 @@ function App() {
 
   return (
     <div className="App">
+      <img src="/images/naylence.svg" alt="Naylence" className="app-logo" />
       <h1>Naylence React RPC Example</h1>
-      <p className="read-the-docs">
-        Math Agent with operations: add, multiply, and fibonacci stream
+      <p className="app-description">
+        This React example demonstrates a Math Agent providing RPC operations (add, multiply, and fibonacci stream)
+        with two fabric nodes communicating via BroadcastChannel, running entirely in the browser.
       </p>
       
       <div className="nodes-container">

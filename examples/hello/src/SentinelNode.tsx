@@ -38,7 +38,7 @@ export function SentinelNode({ onReady }: SentinelNodeProps) {
     });
     
     fabric.serve(agent, 'hello@fame.fabric').then(() => {
-      // console.log('Hello agent served at: hello@fame.fabric');
+      console.log('Hello agent served at: hello@fame.fabric');
       // Signal that sentinel is ready
       onReady?.();
     });

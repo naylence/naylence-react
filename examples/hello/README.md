@@ -11,13 +11,26 @@ This example shows the smallest possible React application that wires up the Nay
 
 ```bash
 cd examples/hello
-npm install
-npm run dev
+make install
+make run
 ```
 
 Open the printed Vite dev server URL (typically http://localhost:5173) to see the component connect to the fabric. Watch the browser console for the step-by-step lifecycle logs produced by the `FabricProvider`.
 
-## Available Scripts
+## Available Commands
+
+### Using Make (recommended)
+
+| Command | Description |
+| --- | --- |
+| `make install` | Installs dependencies with npm. |
+| `make run` | Starts the Vite dev server with fast refresh. |
+| `make build` | Type-checks the project and builds the production bundle. |
+| `make preview` | Serves the production build locally for quick smoke tests. |
+| `make lint` | Runs ESLint using the config from `eslint.config.js`. |
+| `make clean` | Removes node_modules and dist directories. |
+
+### Using npm directly
 
 | Command | Description |
 | --- | --- |

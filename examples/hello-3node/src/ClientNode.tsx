@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useFabric, useRemoteAgent } from '../../../src/index';
+import { useFabric, useRemoteAgent } from '@naylence/react';
 
 export function ClientNode() {
   const { fabric, error } = useFabric();
@@ -22,7 +22,8 @@ export function ClientNode() {
       console.error('Agent call failed:', err);
       alert(`Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
-      setLoading(false);
+      // Small delay to prevent flickering
+      setTimeout(() => setLoading(false), 100);
     }
   };
 
@@ -46,7 +47,7 @@ export function ClientNode() {
             />
             <button 
               onClick={sayHello} 
-              disabled={loading || !helloAgent}
+              disabled={/*loading || */ !helloAgent}
             >
                Send
             </button>

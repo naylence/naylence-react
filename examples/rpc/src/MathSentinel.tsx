@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useFabric, useFabricEffect } from '@naylence/react';
 import { MathAgent } from './MathAgent';
 
@@ -16,6 +16,12 @@ export function MathSentinel({ onReady }: MathSentinelProps) {
   const { fabric, error } = useFabric();
   const [operationLogs, setOperationLogs] = useState<OperationLog[]>([]);
   const [pulseActive, setPulseActive] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when new logs arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [operationLogs]);
 
   useFabricEffect((fabric) => {
     const agent = new MathAgent();
@@ -91,8 +97,10 @@ export function MathSentinel({ onReady }: MathSentinelProps) {
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
           </div>
+          <div className="sentinel-spacer"></div>
         </div>
       )}
     </div>

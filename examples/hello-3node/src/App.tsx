@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
-import { enableLogging } from '@naylence/runtime';
 // Explicitly import the plugin to ensure factory registration happens
 import '@naylence/runtime';
-import { FabricProvider } from '../../../src/index';
+import { FabricProvider } from '@naylence/react';
 import { SentinelNode } from './SentinelNode';
 import { AgentNode } from './AgentNode';
 import { ClientNode } from './ClientNode';
 import { sentinelConfig, agentConfig, clientConfig } from './config-3node-broadcast';
 
 import './App.css';
-
-// Enable logging as early as possible (after window.__ENV__ is set in index.html)
-enableLogging('debug');
 
 function App() {
   const [sentinelReady, setSentinelReady] = useState(false);
@@ -40,9 +36,11 @@ function App() {
 
   return (
     <div className="App">
+      <img src="/images/naylence.svg" alt="Naylence" className="app-logo" />
       <h1>Naylence React - 3 Node Example</h1>
-      <p className="read-the-docs">
-        Three fabric nodes: Client → Sentinel → Agent
+      <p className="app-description">
+        This React example demonstrates three fabric nodes (Client → Sentinel → Agent) communicating via BroadcastChannel,
+        running entirely in the browser.
       </p>
       
       <div className="nodes-container three-node">

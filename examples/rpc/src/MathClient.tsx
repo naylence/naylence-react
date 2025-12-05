@@ -7,7 +7,9 @@ export function MathClient() {
   const [y, setY] = useState(4);
   const [n, setN] = useState(10);
   const [result, setResult] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [addLoading, setAddLoading] = useState(false);
+  const [multiplyLoading, setMultiplyLoading] = useState(false);
+  const [fibLoading, setFibLoading] = useState(false);
   
   // Use the useRemoteAgent hook to get the agent proxy
   const mathAgent = useRemoteAgent<any>('math@fame.fabric');
@@ -15,7 +17,7 @@ export function MathClient() {
   const handleAdd = async () => {
     if (!mathAgent) return;
     
-    setLoading(true);
+    setAddLoading(true);
     try {
       const sum = await mathAgent.add({ x, y });
       setResult(`${x} + ${y} = ${sum}`);
@@ -23,14 +25,14 @@ export function MathClient() {
       console.error('Add operation failed:', err);
       alert(`Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
-      setLoading(false);
+      setAddLoading(false);
     }
   };
 
   const handleMultiply = async () => {
     if (!mathAgent) return;
     
-    setLoading(true);
+    setMultiplyLoading(true);
     try {
       const product = await mathAgent.multiply({ x, y });
       setResult(`${x} × ${y} = ${product}`);
@@ -38,14 +40,14 @@ export function MathClient() {
       console.error('Multiply operation failed:', err);
       alert(`Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
-      setLoading(false);
+      setMultiplyLoading(false);
     }
   };
 
   const handleFibStream = async () => {
     if (!mathAgent) return;
     
-    setLoading(true);
+    setFibLoading(true);
     try {
       const fibStream = await mathAgent.fib_stream({ _stream: true, n });
       const results: number[] = [];
@@ -59,7 +61,7 @@ export function MathClient() {
       console.error('Fibonacci stream failed:', err);
       alert(`Error: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
-      setLoading(false);
+      setFibLoading(false);
     }
   };
 
@@ -81,6 +83,9 @@ export function MathClient() {
                 onChange={(e) => setX(Number(e.target.value))}
                 className="client-input"
               />
+            </div>
+            
+            <div className="input-row">
               <label>y:</label>
               <input
                 type="number"
@@ -93,13 +98,13 @@ export function MathClient() {
             <div className="button-group">
               <button 
                 onClick={handleAdd} 
-                disabled={loading || !mathAgent}
+                disabled={/*addLoading || */ !mathAgent}
               >
                 Add
               </button>
               <button 
                 onClick={handleMultiply} 
-                disabled={loading || !mathAgent}
+                disabled={/*multiplyLoading || */ !mathAgent}
               >
                 Multiply
               </button>
@@ -113,21 +118,20 @@ export function MathClient() {
                 onChange={(e) => setN(Number(e.target.value))}
                 className="client-input"
               />
-              <button 
-                onClick={handleFibStream} 
-                disabled={loading || !mathAgent}
-                style={{ marginLeft: '10px' }}
-              >
-                Fibonacci Stream
-              </button>
             </div>
+            
+            <button 
+              onClick={handleFibStream} 
+              disabled={/*fibLoading || */ !mathAgent}
+              className="fib-button"
+            >
+              Fibonacci Stream
+            </button>
           </div>
           
-          {result && (
-            <div className="client-response">
-              {result}
-            </div>
-          )}
+          <div className={`client-response ${!result ? 'empty' : ''}`}>
+            {result || '\u00A0'}
+          </div>
         </div>
       )}
     </div>

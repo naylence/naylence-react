@@ -29,5 +29,8 @@ export default defineConfig({
     rollupOptions: {
       external: ['@opentelemetry/api']
     }
-  }
+  },
+  server: {
+    port: 3000
+  },
 })

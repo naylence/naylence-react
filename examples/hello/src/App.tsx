@@ -1,13 +1,9 @@
-import '@naylence/runtime';
 import { useState, useEffect } from 'react';
 import { FabricProvider } from '@naylence/react';
 import { SentinelNode } from './SentinelNode';
 import { ClientNode } from './ClientNode';
 import { sentinelConfig, clientConfig } from './config-in-page-connector';
 import './App.css';
-
-// Enable logging as early as possible (after window.__ENV__ is set in index.html)
-// enableLogging('debug');
 
 function App() {
   const [sentinelReady, setSentinelReady] = useState(false);
@@ -25,10 +21,12 @@ function App() {
 
   return (
     <div className="App">
+      <img src="/images/naylence.svg" alt="Naylence" className="app-logo" />
       <h1>Naylence React Hello World</h1>
-      {/* <p className="read-the-docs">
-        Two fabric nodes communicating via BroadcastChannel with an agent
-      </p> */}
+      <p className="app-description">
+        This React example demonstrates two fabric nodes communicating via BroadcastChannel with an agent service,
+        running entirely in the browser.
+      </p>
       
       <div className="nodes-container">
         {/* Client connects and calls the service - only after sentinel is ready */}
